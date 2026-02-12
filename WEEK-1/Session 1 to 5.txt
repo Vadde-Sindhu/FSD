@@ -1,0 +1,248 @@
+MariaDB [(none)]> CREATE DATABASE SCHOOL;
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [(none)]> USE SCHOOL;
+Database changed
+MariaDB [SCHOOL]> CREATE TABLE students (
+    ->     id INT PRIMARY KEY,
+    ->     name VARCHAR(100),
+    ->     email VARCHAR(100),
+    ->     phone VARCHAR(15),
+    ->     department VARCHAR(50)
+    -> );
+Query OK, 0 rows affected (0.011 sec)
+
+MariaDB [SCHOOL]> CREATE TABLE course (
+    ->     course_code VARCHAR(10) PRIMARY KEY,
+    ->     course_name VARCHAR(100),
+    ->     faculty_id INT,
+    ->     student_id INT,
+    ->     faculty_email VARCHAR(100),
+    ->     FOREIGN KEY (student_id) REFERENCES students(id)
+    -> );
+Query OK, 0 rows affected (0.044 sec)
+
+MariaDB [SCHOOL]> INSERT INTO students VALUES
+    -> (1,'Yamini','yamini3366@gmail.com','8688080364','CSE'),
+    -> (2,'SaiKrishna','saikrishnapathi515@gmail.com','8688468615','CSE'),
+    -> (3,'Harshini','harshini15@gmail.com','8673265615','ECE'),
+    -> (4,'Bhumika','bhoomika715@gmail.com','8673254455','EEE'),
+    -> (5,'Sindhu','sindhu88@gmail.com','7245455865','IT');
+Query OK, 5 rows affected (0.071 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [SCHOOL]> INSERT INTO course VALUES
+    -> ('CS101','OPERATING SYSTEM',101,1,'prof_smith@vtu.edu'),
+    -> ('CS102','WEB AND MOBILE APPLICATION DEVELOPMENT',102,2,'prof_jones@vtu.edu'),
+    -> ('CS103','DATABASE MANAGEMENT',101,3,'prof_smith@vtu.edu'),
+    -> ('EC301','DIGITAL ELECTRONICS',103,4,'prof_kumar@vtu.edu'),
+    -> ('CS201','DATA STRUCTURES',104,5,'prof_leila@vtu.edu');
+Query OK, 5 rows affected (0.011 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [SCHOOL]> SELECT * FROM students;
++----+------------+------------------------------+------------+------------+
+| id | name       | email                        | phone      | department |
++----+------------+------------------------------+------------+------------+
+|  1 | Yamini     | yamini3366@gmail.com         | 8688080364 | CSE        |
+|  2 | SaiKrishna | saikrishnapathi515@gmail.com | 8688468615 | CSE        |
+|  3 | Harshini   | harshini15@gmail.com         | 8673265615 | ECE        |
+|  4 | Bhumika    | bhoomika715@gmail.com        | 8673254455 | EEE        |
+|  5 | Sindhu     | sindhu88@gmail.com           | 7245455865 | IT         |
++----+------------+------------------------------+------------+------------+
+5 rows in set (0.002 sec)
+
+MariaDB [SCHOOL]> SELECT * FROM course;
++-------------+----------------------------------------+------------+------------+--------------------+
+| course_code | course_name                            | faculty_id | student_id | faculty_email      |
++-------------+----------------------------------------+------------+------------+--------------------+
+| CS101       | OPERATING SYSTEM                       |        101 |          1 | prof_smith@vtu.edu |
+| CS102       | WEB AND MOBILE APPLICATION DEVELOPMENT |        102 |          2 | prof_jones@vtu.edu |
+| CS103       | DATABASE MANAGEMENT                    |        101 |          3 | prof_smith@vtu.edu |
+| CS201       | DATA STRUCTURES                        |        104 |          5 | prof_leila@vtu.edu |
+| EC301       | DIGITAL ELECTRONICS                    |        103 |          4 | prof_kumar@vtu.edu |
++-------------+----------------------------------------+------------+------------+--------------------+
+5 rows in set (0.001 sec)
+
+MariaDB [SCHOOL]> SELECT s.id, s.name, c.course_name, c.faculty_email
+    -> FROM students s
+    -> INNER JOIN course c ON s.id = c.student_id;
++----+------------+----------------------------------------+--------------------+
+| id | name       | course_name                            | faculty_email      |
++----+------------+----------------------------------------+--------------------+
+|  1 | Yamini     | OPERATING SYSTEM                       | prof_smith@vtu.edu |
+|  2 | SaiKrishna | WEB AND MOBILE APPLICATION DEVELOPMENT | prof_jones@vtu.edu |
+|  3 | Harshini   | DATABASE MANAGEMENT                    | prof_smith@vtu.edu |
+|  5 | Sindhu     | DATA STRUCTURES                        | prof_leila@vtu.edu |
+|  4 | Bhumika    | DIGITAL ELECTRONICS                    | prof_kumar@vtu.edu |
++----+------------+----------------------------------------+--------------------+
+5 rows in set (0.001 sec)
+
+MariaDB [SCHOOL]> SELECT department, COUNT(*) AS total_students
+    -> FROM students
+    -> GROUP BY department;
++------------+----------------+
+| department | total_students |
++------------+----------------+
+| CSE        |              2 |
+| ECE        |              1 |
+| EEE        |              1 |
+| IT         |              1 |
++------------+----------------+
+4 rows in set (0.001 sec)
+
+MariaDB [SCHOOL]> SELECT c.Course_name, COUNT(s.id) AS Total_Students
+    -> FROM students s
+    -> INNER JOIN Course c ON s.id = c.Student_ID
+    -> GROUP BY c.Course_name;
++----------------------------------------+----------------+
+| Course_name                            | Total_Students |
++----------------------------------------+----------------+
+| DATA STRUCTURES                        |              1 |
+| DATABASE MANAGEMENT                    |              1 |
+| DIGITAL ELECTRONICS                    |              1 |
+| OPERATING SYSTEM                       |              1 |
+| WEB AND MOBILE APPLICATION DEVELOPMENT |              1 |
++----------------------------------------+----------------+
+5 rows in set (0.001 sec)
+
+MariaDB [SCHOOL]> CREATE TABLE Faculty_Courses (
+    ->     Faculty_id INT,
+    ->     Faculty_email VARCHAR(100),
+    ->     Course_code VARCHAR(100),
+    ->     Course_name VARCHAR(100)
+    -> );
+Query OK, 0 rows affected (0.017 sec)
+
+MariaDB [SCHOOL]> INSERT INTO Faculty_Courses (Faculty_id, Faculty_email, Course_code, Course_name)
+    -> SELECT Faculty_id, Faculty_email, Course_code, Course_name
+    -> FROM Course;
+Query OK, 5 rows affected (0.005 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [SCHOOL]> UPDATE students
+    -> SET Phone = CONCAT('+91', Phone)
+    -> WHERE Department = 'CSE'
+    -> LIMIT 5;
+Query OK, 2 rows affected (0.010 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+MariaDB [SCHOOL]> START TRANSACTION;
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> UPDATE students
+    -> SET email = 'updated_email@gmail.com'
+    -> WHERE id = 1;
+Query OK, 1 row affected (0.007 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> COMMIT;
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [SCHOOL]> START TRANSACTION;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> UPDATE students
+    -> SET Department = 'AI'
+    -> WHERE id = 2;
+Query OK, 1 row affected (0.007 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> SAVEPOINT sp1;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> UPDATE students
+    -> SET Department = 'DS'
+    -> WHERE id = 3;
+Query OK, 1 row affected (0.000 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> ROLLBACK TO sp1;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> COMMIT;
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [SCHOOL]> DELIMITER //
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> CREATE FUNCTION add_numbers(a INT, b INT)
+    -> RETURNS INT
+    -> DETERMINISTIC
+    -> BEGIN
+    ->     RETURN a + b;
+    -> END //
+Query OK, 0 rows affected (0.035 sec)
+
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> DELIMITER ;
+MariaDB [SCHOOL]> SELECT add_numbers(10, 20) AS Result;
++--------+
+| Result |
++--------+
+|     30 |
++--------+
+1 row in set (0.001 sec)
+
+MariaDB [SCHOOL]> DELIMITER //
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> CREATE FUNCTION get_student_count(dept VARCHAR(50))
+    -> RETURNS INT
+    -> DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE total INT;
+    ->     SELECT COUNT(*) INTO total
+    ->     FROM students
+    ->     WHERE Department = dept;
+    ->     RETURN total;
+    -> END //
+Query OK, 0 rows affected (0.004 sec)
+
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> DELIMITER ;
+MariaDB [SCHOOL]> SELECT get_student_count('CSE') AS Total_Students;
++----------------+
+| Total_Students |
++----------------+
+|              1 |
++----------------+
+1 row in set (0.001 sec)
+
+MariaDB [SCHOOL]> START TRANSACTION;
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> UPDATE students
+    -> SET phone = CONCAT('+91', phone)
+    -> WHERE department = 'CSE';
+Query OK, 1 row affected, 1 warning (0.008 sec)
+Rows matched: 1  Changed: 1  Warnings: 1
+
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> COMMIT;
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [SCHOOL]> DELIMITER //
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> CREATE FUNCTION add_numbers(a INT, b INT)
+    -> RETURNS INT
+    -> DETERMINISTIC
+    -> BEGIN
+    ->     RETURN a + b;
+    -> END //
+ERROR 1304 (42000): FUNCTION add_numbers already exists
+MariaDB [SCHOOL]>
+MariaDB [SCHOOL]> DELIMITER ;
+MariaDB [SCHOOL]> SELECT add_numbers(5, 10);
++--------------------+
+| add_numbers(5, 10) |
++--------------------+
+|                 15 |
++--------------------+
+1 row in set (0.001 sec)

@@ -1,0 +1,64 @@
+//CREATING DATABASE
+CREATE DATABASE order_management;
+USE order_management;
+
+//CUSTOMER TABLE
+CREATE TABLE customers (
+    customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    email VARCHAR(100)
+);
+
+//PRODUCT TABLE
+ CREATE TABLE products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_name VARCHAR(50),
+    price INT
+);
+
+//ORDERS TABLE
+ CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    product_id INT,
+    quantity INT,
+    order_date DATE,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+//INSERT QUERIES
+INSERT INTO customers (name,email) VALUES
+('Asha','asha@gmail.com'),
+('Ravi','ravi@gmail.com');
+
+INSERT INTO products (product_name,price) VALUES
+('Mobile',15000),
+('Laptop',50000);
+
+INSERT INTO orders (customer_id,product_id,quantity,order_date) VALUES
+(1,1,1,'2024-01-01'),
+(1,2,1,'2024-01-02'),
+(2,1,2,'2024-01-03');
+
+//SELECT QUERIES
+SELECT c.name, p.product_name, o.quantity, p.price,
+(o.quantity * p.price) AS total
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+JOIN products p ON o.product_id = p.product_id
+ORDER BY o.order_date DESC;
+
+SELECT c.name, p.product_name,
+(o.quantity * p.price) AS total
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+JOIN products p ON o.product_id = p.product_id
+ORDER BY total DESC
+LIMIT 1;
+
+SELECT c.name, COUNT(o.order_id) AS total_orders
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id
+ORDER BY total_orders DESC

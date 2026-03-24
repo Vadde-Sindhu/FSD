@@ -1,0 +1,46 @@
+//CREATING DATABASE
+CREATE DATABASE payment_system;
+USE payment_system;
+
+//ACCOUNTS TABLE
+CREATE TABLE accounts (
+    account_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    balance INT
+);
+
+ INSERT INTO accounts (name, balance) VALUES
+('User', 10000),
+('Merchant', 5000);
+
+ SELECT * FROM accounts;
+
+ START TRANSACTION;
+UPDATE accounts
+SET balance = balance - 2000
+WHERE name = 'User';
+UPDATE accounts
+SET balance = balance + 2000
+WHERE name = 'Merchant';
+COMMIT;
+
+START TRANSACTION;
+UPDATE accounts
+SET balance = balance - 2000
+WHERE name = 'User';
+-- Simulate error (wrong account)
+UPDATE accounts
+SET balance = balance + 2000
+WHERE name = 'WrongName';
+ROLLBACK;
+
+//INSERTING VALUES
+INSERT INTO accounts (name, balance) VALUES
+('Ravi', 10000),
+('Asha', 12000),
+('Neha', 9000),
+('Rahul', 11000),
+('Amazon', 50000),
+('Flipkart', 40000),
+('Swiggy', 30000),
+('Zomato', 35000);
